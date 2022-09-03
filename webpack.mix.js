@@ -12,9 +12,10 @@ const mix = require('laravel-mix');
  */
 
 mix.js('resources/js/app.js', 'public/js').vue()
-    .sass('resources/sass/app.scss', 'public/css')
-    .webpackConfig(require('./webpack.config'));
+  .sass('resources/sass/app.scss', 'public/css')
+  .copyDirectory('resources/images', 'public/images')
+  .webpackConfig(require('./webpack.config'));
 
 if (mix.inProduction()) {
-    mix.version();
+  mix.version();
 }

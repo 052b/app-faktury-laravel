@@ -1,30 +1,35 @@
 <template>
-  <Head title="Permission Create"/>
+  <Head title="Edycja Kontrahenta"/>
 
   <breeze-authenticated-layout>
     <template #header>
       <h2 class="h4 font-weight-bold">
-        Create permission
+        Edycja Kontrahenta
       </h2>
 
     </template>
 
     <div class="card shadow-sm">
       <div class="card-body">
-        <form @submit.prevent="form.post(route('permissions.store'))">
+        <form @submit.prevent="form.put(route('clients.update', form.id))">
           <div class="row mb-4">
             <div class="col">
               <div class="form-outline">
-                <label class="form-label" for="permission_name">Permission name</label>
-                <input type="text" name="permission_name" id="permission_name" class="form-control"
-                       v-model="form.permission_name"/>
-                <div class="text-danger">{{ errors.permission_name }}</div>
+                <label class="form-label" for="client_name">Nazwa</label>
+                <input type="text" name="client_name" id="client_name" class="form-control"
+                       v-model="form.name"/>
+                <div class="text-danger">{{ errors.name }}</div>
               </div>
             </div>
           </div>
           <!-- Submit button -->
-          <button type="submit" :disabled="form.processing" class="btn btn-primary btn-block my-4">Save Permission
+          <button type="submit"
+                  :disabled="form.processing"
+                  class="btn btn-primary btn-block my-4"
+          >
+            Zapisz
           </button>
+
         </form>
       </div>
     </div>
@@ -42,12 +47,13 @@ export default {
     Link
   },
   props: {
-    permission_list: Object,
+    client: Object,
     errors: Object
   },
-  setup() {
+  setup(props) {
     const form = useForm({
-      permission_name: ""
+      id: props.client.id,
+      name: props.client.name,
     })
     return {form}
   }

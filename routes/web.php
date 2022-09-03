@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ClientController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -33,5 +34,7 @@ Route::resource('roles', \App\Http\Controllers\RoleController::class)
 Route::resource('permissions', \App\Http\Controllers\PermissionController::class)
     ->middleware(['auth', 'verified']);
 
+Route::resource('clients', ClientController::class)
+    ->middleware(['auth', 'verified']);
 
 require __DIR__.'/auth.php';

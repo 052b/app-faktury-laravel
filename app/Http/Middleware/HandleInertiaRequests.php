@@ -47,6 +47,10 @@ class HandleInertiaRequests extends Middleware
             'flash' => [
                 'message' => session('message')
             ],
+            'toast' => function () {
+                return session('toast');
+            },
+            'popstate' => false
         ]);
     }
 }

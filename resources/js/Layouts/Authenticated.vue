@@ -1,98 +1,104 @@
 <template>
   <div>
-    <nav class="navbar navbar-expand-md navbar-light bg-white border-bottom sticky-top">
-      <div class="container">
-        <!-- Logo -->
-        <a class="navbar-brand" href="/">
-          <Link :href="route('dashboard')">
-            <breeze-application-logo width="36"/>
-          </Link>
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
+    <header class="navbar navbar-expand-md navbar-light d-print-none">
+      <div class="container-xl">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu">
           <span class="navbar-toggler-icon"></span>
         </button>
-
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <!-- Left Side Of Navbar -->
-          <ul class="navbar-nav me-auto">
-            <breeze-nav-link :href="route('dashboard')" :active="route().current('dashboard')">
-              Dashboard
-            </breeze-nav-link>
-            <breeze-nav-link v-if="$page.props.roles.includes('admin')" :href="route('roles.index')"
-                             :active="route().current('roles.*')">
-              Roles
-            </breeze-nav-link>
-            <breeze-nav-link v-if="$page.props.roles.includes('admin')" :href="route('permissions.index')"
-                             :active="route().current('permissions.*')">
-              Permissions
-            </breeze-nav-link>
-          </ul>
-
-          <!-- Right Side Of Navbar -->
-          <ul class="navbar-nav align-items-baseline">
-            <!-- Authentication Links -->
-            <breeze-dropdown id="settingsDropdown">
-              <template #trigger>
-                {{ $page.props.auth.user.name }}
-
-                <svg class="ms-2" width="18" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                  <path fill-rule="evenodd"
-                        d="M10 3a1 1 0 01.707.293l3 3a1 1 0 01-1.414 1.414L10 5.414 7.707 7.707a1 1 0 01-1.414-1.414l3-3A1 1 0 0110 3zm-3.707 9.293a1 1 0 011.414 0L10 14.586l2.293-2.293a1 1 0 011.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
-                        clip-rule="evenodd"/>
-                </svg>
-              </template>
-
-              <template #content>
-                <!-- Authentication -->
-                <breeze-dropdown-link @click="logout" as="button">
-                  Log Out
-                </breeze-dropdown-link>
-              </template>
-            </breeze-dropdown>
-          </ul>
+        <h1 class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
+          <Link :href="route('dashboard')">
+            <application-logo width="100"></application-logo>
+          </Link>
+        </h1>
+        <div class="navbar-nav flex-row order-md-last">
+          <div class="nav-item dropdown">
+            <a href="#"
+               class="nav-link d-flex lh-1 text-reset p-0"
+               data-bs-toggle="dropdown"
+               aria-label="Open user menu"
+            >
+              <div class="d-none d-xl-block ps-2">
+                <div>{{ $page.props.auth.user.name }}</div>
+              </div>
+            </a>
+            <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+              <a href="#" class="dropdown-item">Profil</a>
+              <div class="dropdown-divider"></div>
+              <breeze-dropdown-link @click="logout" as="button">
+                Wyloguj
+              </breeze-dropdown-link>
+            </div>
+          </div>
+        </div>
+        <div class="collapse navbar-collapse" id="navbar-menu">
+          <div class="d-flex flex-column flex-md-row flex-fill align-items-stretch align-items-md-center">
+            <ul class="navbar-nav">
+              <breeze-nav-link :href="route('dashboard')" :active="route().current('dashboard')">
+                Dashboard
+              </breeze-nav-link>
+              <breeze-nav-link :href="route('clients.index')" :active="route().current('clients.*')">
+                Kontrahenci
+              </breeze-nav-link>
+              <breeze-nav-link :href="route('invoices.index')" :active="route().current('invoices.*')">
+                Faktury
+              </breeze-nav-link>
+              <breeze-nav-link :href="route('clients.create')" :active="route().current('clients.create')">
+                Dodaj kontrahenta
+              </breeze-nav-link>
+            </ul>
+          </div>
         </div>
       </div>
-    </nav>
-
-    <!-- Page Heading -->
-    <header class="d-flex py-3 bg-white shadow-sm border-bottom">
-      <div class="container">
-        <div v-if="$page.props.flash.message" class="text-info">{{ $page.props.flash.message }}</div>
-        <slot name="header"/>
-      </div>
     </header>
+    <div class="page-wrapper">
+      <div class="page-body">
+        <div class="container-xl">
+          <slot></slot>
+          <alert :toast="$page.props.toast" :popstate="$page.props.popstate"></alert>
+        </div>
+      </div>
+    </div>
+    <!--            <breeze-nav-link v-if="$page.props.roles.includes('admin')" :href="route('roles.index')"-->
+    <!--                             :active="route().current('roles.*')">-->
+    <!--              Roles-->
+    <!--            </breeze-nav-link>-->
+    <!--            <breeze-nav-link v-if="$page.props.roles.includes('admin')" :href="route('permissions.index')"-->
+    <!--                             :active="route().current('permissions.*')">-->
+    <!--              Permissions-->
+    <!--            </breeze-nav-link>-->
 
-    <!-- Page Content -->
-    <main class="container my-4">
-      <slot/>
-    </main>
+    <!--    <header class="d-flex py-3 bg-white shadow-sm border-bottom">-->
+    <!--      <div class="container">-->
+    <!--        <div v-if="$page.props.flash.message" class="text-info">{{ $page.props.flash.message }}</div>-->
+    <!--        <slot name="header"/>-->
+    <!--      </div>-->
+    <!--    </header>-->
   </div>
 </template>
 
 <script>
-import BreezeApplicationLogo from '@/Components/ApplicationLogo.vue'
+import ApplicationLogo from '@/Components/ApplicationLogo.vue'
 import BreezeDropdown from '@/Components/Dropdown.vue'
 import BreezeDropdownLink from '@/Components/DropdownLink.vue'
 import BreezeNavLink from '@/Components/NavLink.vue'
 import {Link} from '@inertiajs/inertia-vue3'
 import {Inertia} from '@inertiajs/inertia'
+import Alert from "@/Components/Alert"
 
 export default {
   components: {
-    BreezeApplicationLogo,
+    ApplicationLogo,
     BreezeDropdown,
     BreezeDropdownLink,
     BreezeNavLink,
     Link,
+    Alert
   },
-
   data() {
     return {
       showingNavigationDropdown: false,
     }
   },
-
   methods: {
     logout() {
       Inertia.post(route("logout"));

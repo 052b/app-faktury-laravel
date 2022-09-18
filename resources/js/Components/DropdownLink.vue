@@ -1,9 +1,9 @@
 <template>
-  <button type="submit" @click="$emit('clicked')" class="dropdown-item px-4" v-if="as == 'button'">
+  <button type="submit" @click="$emit('clicked')" class="dropdown-item" v-if="as == 'button'">
     <slot></slot>
   </button>
 
-  <Link :href="href" class="dropdown-item px-4" v-else>
+  <Link :href="href" class="dropdown-item" v-else>
     <slot></slot>
   </Link>
 </template>

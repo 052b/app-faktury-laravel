@@ -4,7 +4,7 @@
       <div class="col-sm-12 col-md-8 col-lg-5 my-5">
         <div class="d-flex justify-content-center mb-3">
           <Link href="/">
-            <breeze-application-logo width="82" />
+            <application-logo width="82" />
           </Link>
         </div>
 
@@ -17,12 +17,12 @@
 </template>
 
 <script>
-import BreezeApplicationLogo from '@/Components/ApplicationLogo.vue'
+import ApplicationLogo from '@/Components/ApplicationLogo.vue'
 import { Link } from '@inertiajs/inertia-vue3';
 
 export default {
   components: {
-    BreezeApplicationLogo,
+    ApplicationLogo,
     Link,
   }
 }

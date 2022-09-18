@@ -16,7 +16,7 @@
         @routes
         <script src="{{ mix('js/app.js') }}" defer></script>
     </head>
-    <body class="bg-light">
+    <body class="layout-fluid theme-light">
         @inertia
     </body>
 </html>

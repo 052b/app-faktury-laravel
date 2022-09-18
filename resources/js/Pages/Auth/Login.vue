@@ -1,5 +1,5 @@
 <template>
-  <Head title="Log in"/>
+  <Head title="Logowanie"/>
 
   <div class="card-body">
 

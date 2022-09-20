@@ -81,13 +81,11 @@
                 </VueMultiselect>
                 <div v-if="errors.type" class="invalid-feedback">{{ errors.type }}</div>
               </div>
-              <div class="card-footer text-end">
-                <div class="d-flex">
-                  <Link :href="route('clients.index')" class="btn btn-link">Anuluj</Link>
-                  <button type="submit" :disabled="form.processing" class="btn btn-primary ms-auto">
-                    Zapisz
-                  </button>
-                </div>
+              <div class="d-flex align-items-center pt-4 mt-auto">
+                <Link :href="route('clients.index')" class="btn btn-link">Anuluj</Link>
+                <button type="submit" :disabled="form.processing" class="btn btn-primary ms-auto">
+                  Zapisz
+                </button>
               </div>
             </form>
           </div>

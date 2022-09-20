@@ -28,6 +28,10 @@ class Client extends Model
         'key_client'
     ];
 
+    protected $casts = [
+        'deleted' => 'boolean'
+    ];
+
     public function invoices(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Invoice::class,  'id_contractor','id');

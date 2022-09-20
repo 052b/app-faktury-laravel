@@ -1,6 +1,7 @@
 <?php
 
 use App\Actions\InvoiceSetPaid;
+use App\Actions\InvoiceSetUnpaid;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ClientGusController;
 use App\Http\Controllers\InvoiceController;
@@ -44,6 +45,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('invoices', InvoiceController::class)
         ->except(['show']);
     Route::post('invoices/set-paid', InvoiceSetPaid::class)->name('invoices.set-paid');
+    Route::post('invoices/set-unpaid', InvoiceSetUnpaid::class)->name('invoices.set-unpaid');
 });
 
 require __DIR__ . '/auth.php';

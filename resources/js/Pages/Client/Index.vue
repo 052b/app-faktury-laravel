@@ -7,12 +7,7 @@
         <h3 class="card-title">Kontrahenci</h3>
         <div class="card-actions">
           <Link class="btn btn-primary" :href="route('clients.create')">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
-                 stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-              <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-              <line x1="12" y1="5" x2="12" y2="19"></line>
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-            </svg>
+            <plus-icon></plus-icon>
             Nowy rekord
           </Link>
         </div>
@@ -40,7 +35,7 @@
             <div class="ms-2 d-inline-block">
               <input type="text"
                      v-model="query.search"
-                     class="form-control form-control-sm"
+                     class="form-control"
                      aria-label="Szukaj"
               >
             </div>
@@ -48,23 +43,36 @@
         </div>
       </div>
       <div class="table-responsive">
-        <table class="table card-table table-vcenter text-nowrap datatable">
+        <table class="table card-table table-vcenter datatable">
           <thead>
           <tr>
             <th>&nbsp;</th>
-            <th><span @click="sort('name')">Nazwa</span></th>
-            <th><span @click="sort('address')">Adres</span></th>
-            <th><span @click="sort('city')">Miasto</span></th>
-            <th><span @click="sort('nip')">NIP</span></th>
+            <th>
+              <span @click="sort('name')">Nazwa</span>
+              <component v-bind:is="currentSort('name')"></component>
+            </th>
+            <th>
+              <span @click="sort('address')">Adres</span>
+              <component v-bind:is="currentSort('address')"></component>
+            </th>
+            <th>
+              <span @click="sort('city')">Miasto</span>
+              <component v-bind:is="currentSort('city')"></component>
+            </th>
+            <th>
+              <span @click="sort('nip')">NIP</span>
+              <component v-bind:is="currentSort('nip')"></component>
+            </th>
             <th><span @click="sort('phone')">Telefon</span></th>
             <th><span @click="sort('mail')">E-mail</span></th>
             <th>Archiwum</th>
-            <th></th>
           </tr>
           </thead>
           <tbody>
           <tr v-for="client in clients.data" :key="client.id">
-            <td><KeyIcon></KeyIcon></td>
+            <td>
+              <key-icon></key-icon>
+            </td>
             <td>
               <Link class="text-reset" :href="`/clients/${client.id}/edit`">{{ client.name }}</Link>
             </td>
@@ -82,20 +90,17 @@
             <td>{{ client.nip }}</td>
             <td>{{ client.phone }}</td>
             <td>{{ client.mail }}</td>
-            <td>{{ client.deleted }}</td>
             <td>
-              <div class="btn-group btn-group-sm" role="group" aria-label="CRUD">
-                <button @click="destroy(client.id)"
-                        type="button"
-                        class="btn btn-warning"
-                >
-                  Usuń
-                </button>
-              </div>
+              <input class="form-check-input"
+                     type="checkbox"
+                     v-model="client.deleted"
+                     @click="toggle(client.id)"
+              >
             </td>
           </tr>
           </tbody>
         </table>
+        <TableEmpty v-if="clients.data.length === 0"></TableEmpty>
       </div>
       <div class="card-footer d-flex align-items-center">
         <page-of-pages :from="clients.from" :to="clients.to" :total="clients.total"></page-of-pages>
@@ -116,22 +121,26 @@
 <script>
 import AuthenticatedLayout from '@/Layouts/Authenticated.vue'
 import {Head, Link} from '@inertiajs/inertia-vue3'
-import {Inertia} from '@inertiajs/inertia'
 import Paginate from "@/Components/Paginate";
 import PageOfPages from "@/Components/PageOfPages";
+import TableEmpty from "@/Components/TableEmpty"
 import {throttle, findIndex} from 'lodash';
 import VueMultiselect from 'vue-multiselect'
-import KeyIcon from 'vue-tabler-icons'
+import {SortDescending2Icon, SortAscending2Icon, KeyIcon, PlusIcon} from 'vue-tabler-icons'
 
 export default {
   components: {
     PageOfPages,
     Paginate,
+    TableEmpty,
     AuthenticatedLayout,
     Head,
     Link,
     VueMultiselect,
-    KeyIcon
+    KeyIcon,
+    SortDescending2Icon,
+    SortAscending2Icon,
+    PlusIcon
   },
   props: {
     clients: Object,
@@ -150,7 +159,8 @@ export default {
         field: this.filters.sort ? this.filters.sort.split('-').pop() : null,
         direction: this.filters.sort ? (this.filters.sort.indexOf('-') > -1 ? 'desc' : 'asc') : null
       },
-      selectedStatus: {}
+      selectedStatus: {},
+      sortedColumn: 'name',
     }
   },
   mounted() {
@@ -164,14 +174,6 @@ export default {
       statusIdx = 2
     }
     this.selectedStatus = this.options[statusIdx]
-  },
-  setup() {
-    const destroy = (id) => {
-      if (confirm("Czy chcesz usunąć ten rekord?")) {
-        Inertia.delete(route('clients.destroy', id))
-      }
-    }
-    return {destroy}
   },
   watch: {
     query: {
@@ -188,6 +190,20 @@ export default {
         });
       }, 150),
       deep: true
+    }
+  },
+  computed: {
+    currentSort() {
+      return (column) => {
+        if (column === this.sortedColumn) {
+          if (this.query.direction === 'desc') {
+            return SortAscending2Icon
+          }
+          return SortDescending2Icon
+        }
+
+        return null
+      }
     }
   },
   methods: {
@@ -213,6 +229,15 @@ export default {
     },
     getAddress(address, address2) {
       return (address + ' ' + (address2 ?? '')).trim()
+    },
+    toggle(id) {
+      axios.delete(route('clients.destroy', id))
+          .then(response => {
+            console.log(response)
+          })
+          .catch(error => {
+            console.log(error)
+          })
     }
   }
 }

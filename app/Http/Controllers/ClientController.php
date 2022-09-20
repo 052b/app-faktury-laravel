@@ -103,18 +103,10 @@ class ClientController extends Controller
      * Remove the specified resource from storage.
      *
      * @param Client $client
-     * @return RedirectResponse
      */
-    public function destroy(Client $client): \Illuminate\Http\RedirectResponse
+    public function destroy(Client $client)
     {
-        $client->deleted = true;
+        $client->deleted = !$client->deleted;
         $client->save();
-
-        return \redirect()->route('clients.index')->with([
-            'toast' => [
-                'type'    => 'success',
-                'message' => 'Rekord został usunięty'
-            ]
-        ]);
     }
 }

@@ -2,7 +2,7 @@
   <div class="empty">
     <p class="empty-title">Brak danych</p>
     <p class="empty-subtitle text-muted">
-      Nie znaleziono wpisów pasujących do zadanych kryteriów.
+      Nie znaleziono rekordów pasujących do zadanych kryteriów.
     </p>
 <!--    <div class="empty-action">-->
 <!--      <a href="#" class="btn btn-primary">-->

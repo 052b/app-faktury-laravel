@@ -7,15 +7,12 @@ export default {
   name: "PageOfPages",
   props: {
     from: {
-      type: Number,
       required: true
     },
     to: {
-      type: Number,
       required: true
     },
     total: {
-      type: Number,
       required: true
     }
   }

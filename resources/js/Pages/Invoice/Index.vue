@@ -19,7 +19,7 @@
       </div>
       <div class="card-body border-bottom py-3">
         <div class="d-flex">
-          <div class="col-3">
+          <div class="col-2">
             <label class="form-label">Kontrahent</label>
             <VueMultiselect v-model="selectedClient"
                             track-by="id"
@@ -105,7 +105,9 @@
             </td>
             <td>{{ invoice.sell_date }}</td>
             <td class="text-end">{{ invoice.invoice_term }}</td>
-            <td>{{ invoice.status }}</td>
+            <td>
+              <set-paid-status :invoice-id="invoice.id" :invoice-status="invoice.status"></set-paid-status>
+            </td>
             <td class="text-end">{{ invoice.positions_sum_price_netto }}</td>
             <td>
               <div class="btn-group btn-group-sm" role="group" aria-label="CRUD">
@@ -123,6 +125,7 @@
           </tr>
           </tbody>
         </table>
+        <table-empty v-if="invoices.data.length === 0"></table-empty>
       </div>
       <div class="card-footer d-flex align-items-center">
         <page-of-pages :from="invoices.from" :to="invoices.to" :total="invoices.total"></page-of-pages>
@@ -137,6 +140,7 @@
         ></paginate>
       </div>
     </div>
+    <date-paid-modal title="Data płatności" btn-cancel="Anuluj" btn-ok="Potwierdź"></date-paid-modal>
   </authenticated-layout>
 </template>
 
@@ -146,24 +150,30 @@ import {Head, Link} from '@inertiajs/inertia-vue3'
 import {Inertia} from '@inertiajs/inertia'
 import Paginate from "@/Components/Paginate";
 import PageOfPages from "@/Components/PageOfPages";
+import TableEmpty from "@/Components/TableEmpty";
 import {throttle, findIndex, has} from 'lodash';
 import VueMultiselect from 'vue-multiselect'
 import DatePicker from 'vue-datepicker-next';
 import 'vue-datepicker-next/index.css';
 import 'vue-datepicker-next/locale/pl';
 import {SortDescending2Icon, SortAscending2Icon} from 'vue-tabler-icons'
+import SetPaidStatus from "@/Components/Invoice/SetPaidStatus";
+import DatePaidModal from "@/Components/Invoice/DatePaidModal";
 
 export default {
   components: {
     PageOfPages,
     Paginate,
+    TableEmpty,
     AuthenticatedLayout,
     Head,
     Link,
     VueMultiselect,
     DatePicker,
     SortDescending2Icon,
-    SortAscending2Icon
+    SortAscending2Icon,
+    SetPaidStatus,
+    DatePaidModal
   },
   props: {
     invoices: Object,
@@ -181,11 +191,7 @@ export default {
         field: this.filters.sort ? this.filters.sort.split('-').pop() : null,
         direction: this.filters.sort ? (this.filters.sort.indexOf('-') > -1 ? 'desc' : 'asc') : null
       },
-      selectedClient: {},
-      invoiceStatus: [
-        {id: 0, name: 'Nieopłacona'},
-        {id: 1, name: 'Opłacona'}
-      ]
+      selectedClient: {}
     }
   },
   mounted() {
